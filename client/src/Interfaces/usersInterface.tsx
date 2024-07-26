@@ -11,3 +11,9 @@ export interface UsersProps {
     medium: string;
   };
 }
+
+export interface EventProps {
+  title: string;
+  description: string;
+  _id: string;
+}
