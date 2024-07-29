@@ -17,3 +17,8 @@ export interface EventProps {
   description: string;
   _id: string;
 }
+
+export interface PaginationProps {
+  page: number;
+  pageSize: number;
+}
