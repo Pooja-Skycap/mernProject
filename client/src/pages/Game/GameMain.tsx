@@ -20,13 +20,13 @@ const GameMain = () => {
   };
 
   return (
-    <div className="main">
+    <main>
       Tic-Tac-toe Game
       <Board nextMove={nextMove} squares={currentSquares} onPlay={handlePlay} />
       <div className="game-info">
         <MoveList history={historyMove} jumpMove={jumpTo} />
       </div>
-    </div>
+    </main>
   );
 };
 
