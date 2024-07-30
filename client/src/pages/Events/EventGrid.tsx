@@ -8,41 +8,35 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import CircularLoader from "../../components/Loader/CircularLoader";
 import { EventProps, PaginationProps } from "../../Interfaces/usersInterface";
+import { usePagination } from "../../context/paginationContext";
+import Error from "../../components/Error/Error";
 
 const EventGrid = () => {
+  const { paginationModel, setPaginationModel, sortModel, setSortModel } =
+    usePagination();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [events, setEvents] = useState<EventProps[]>([]);
   const [rowCount, setRowCount] = useState(0);
 
-  const getStoredPaginationModel = () => {
-    const saved = localStorage.getItem("paginationModel");
-    return saved ? JSON.parse(saved) : { page: 0, pageSize: 5 };
-  };
-  const getStoredSortModel = () => {
-    const saved = localStorage.getItem("sortModel");
-    return saved ? JSON.parse(saved) : null;
-  };
-  const [paginationModel, setPaginationModel] = useState(
-    getStoredPaginationModel
-  );
-  const [queryOptions, setQueryOptions] = useState<GridSortModel | null>(
-    getStoredSortModel
+  const handleSortModelChange = useCallback(
+    (sortModel: GridSortModel) => {
+      setSortModel(sortModel);
+    },
+    [setSortModel]
   );
 
-  const handleSortModelChange = useCallback((sortModel: GridSortModel) => {
-    setQueryOptions(sortModel);
-    localStorage.setItem("sortModel", JSON.stringify(sortModel));
-  }, []);
-
-  const handlePaginationModelChange = useCallback((model: PaginationProps) => {
-    setPaginationModel(model);
-    localStorage.setItem("paginationModel", JSON.stringify(model));
-  }, []);
-
+  const handlePaginationModelChange = useCallback(
+    (model: PaginationProps) => {
+      setPaginationModel(model);
+    },
+    [setPaginationModel]
+  );
 
   const url = useMemo(() => {
-    return `http://localhost:5400/events/get?offset=${paginationModel?.page}&limit=${paginationModel?.pageSize}&fieldname=${queryOptions?.[0]?.field}&sort=${queryOptions?.[0]?.sort}`;
-  }, [queryOptions, paginationModel]);
+    return `http://localhost:5400/events/get?offset=${paginationModel.page}&limit=${paginationModel.pageSize}&fieldname=${sortModel?.[0]?.field}&sort=${sortModel?.[0]?.sort}`;
+  }, [paginationModel, sortModel]);
 
   useEffect(() => {
     const getusers = async () => {
@@ -53,6 +47,10 @@ const EventGrid = () => {
         setEvents(data.events);
       } catch (error) {
         console.log("error", error);
+        setIsError(true);
+        if (axios.isAxiosError(error)) {
+          setErrorMessage(error.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -76,6 +74,8 @@ const EventGrid = () => {
       <h1>Users Data using "Data Grid"</h1>
       {isLoading ? (
         <CircularLoader />
+      ) : isError ? (
+        <Error error={errorMessage} />
       ) : (
         <DataGrid
           //   initialState={{
