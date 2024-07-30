@@ -11,6 +11,7 @@ import "./App.css";
 import { PaginationProvider } from "./context/paginationContext";
 import Counter from "./components/Counter/Counter";
 import UsersData from "./pages/Users/UsersData";
+import Chats from "./pages/Chats/Chats";
 // import EventTable from "./pages/Events/EventTable";
 
 function App() {
@@ -29,6 +30,9 @@ function App() {
               <NavLink to="/userdata">User Data</NavLink>
             </li>
             <li>
+              <NavLink to="/socket">Socket</NavLink>
+            </li>
+            <li>
               <NavLink to="/counter">Counter</NavLink>
             </li>
           </ul>
@@ -38,6 +42,8 @@ function App() {
             <Route path="/userdata" element={<UsersData />} />
             {/* <Route path="/" element={<UsersGrid />} /> */}
             <Route path="/" element={<EventGrid />} />
+            <Route path="/socket" element={<Chats />} />
+
             {/* <Route path="/" element={<EventTable />} /> */}
 
             <Route path="/game" element={<GameMain />} />
