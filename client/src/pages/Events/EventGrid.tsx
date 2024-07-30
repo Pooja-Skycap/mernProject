@@ -9,11 +9,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import CircularLoader from "../../components/Loader/CircularLoader";
 import { EventProps, PaginationProps } from "../../Interfaces/usersInterface";
 import { usePagination } from "../../context/paginationContext";
+import Error from "../../components/Error/Error";
 
 const EventGrid = () => {
   const { paginationModel, setPaginationModel, sortModel, setSortModel } =
     usePagination();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [events, setEvents] = useState<EventProps[]>([]);
   const [rowCount, setRowCount] = useState(0);
 
@@ -44,6 +47,10 @@ const EventGrid = () => {
         setEvents(data.events);
       } catch (error) {
         console.log("error", error);
+        setIsError(true);
+        if (axios.isAxiosError(error)) {
+          setErrorMessage(error.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -67,6 +74,8 @@ const EventGrid = () => {
       <h1>Users Data using "Data Grid"</h1>
       {isLoading ? (
         <CircularLoader />
+      ) : isError ? (
+        <Error error={errorMessage} />
       ) : (
         <DataGrid
           //   initialState={{

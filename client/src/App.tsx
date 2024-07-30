@@ -9,6 +9,8 @@ import GameMain from "./pages/Game/GameMain";
 import EventGrid from "./pages/Events/EventGrid";
 import "./App.css";
 import { PaginationProvider } from "./context/paginationContext";
+import Counter from "./components/Counter/Counter";
+import UsersData from "./pages/Users/UsersData";
 // import EventTable from "./pages/Events/EventTable";
 
 function App() {
@@ -23,16 +25,23 @@ function App() {
             <li>
               <NavLink to="/game">Game</NavLink>
             </li>
+            <li>
+              <NavLink to="/userdata">User Data</NavLink>
+            </li>
+            <li>
+              <NavLink to="/counter">Counter</NavLink>
+            </li>
           </ul>
         </nav>
         <div>
           <Routes>
-            {/* <Route path="/" element={<UsersData />} /> */}
+            <Route path="/userdata" element={<UsersData />} />
             {/* <Route path="/" element={<UsersGrid />} /> */}
             <Route path="/" element={<EventGrid />} />
             {/* <Route path="/" element={<EventTable />} /> */}
 
             <Route path="/game" element={<GameMain />} />
+            <Route path="/counter" element={<Counter />} />
           </Routes>
         </div>
       </PaginationProvider>

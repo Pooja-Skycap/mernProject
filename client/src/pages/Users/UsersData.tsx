@@ -6,9 +6,13 @@ import "../../assets/styles/UserData.css";
 import CircularLoader from "../../components/Loader/CircularLoader";
 import { Pagination, Stack } from "@mui/material";
 import usePagination from "../../assets/Hooks/usePagination";
+import Error from "../../components/Error/Error";
 
 const UsersData = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const [users, setUsers] = useState<UsersProps[]>([]);
   const [perPage, setPerPage] = useState(4);
   const limitOptions = [4, 8, 12, 16, 20];
@@ -35,6 +39,10 @@ const UsersData = () => {
         );
         setUsers(usersData?.data?.results);
       } catch (error) {
+        setIsError(true);
+        if (axios.isAxiosError(error)) {
+          setErrorMessage(error.message);
+        }
         console.log("error", error);
       } finally {
         setIsLoading(false);
@@ -48,6 +56,8 @@ const UsersData = () => {
       <h1>Users Data</h1>
       {isLoading ? (
         <CircularLoader />
+      ) : isError ? (
+        <Error error={errorMessage} />
       ) : (
         <>
           <ul className="userslist">
