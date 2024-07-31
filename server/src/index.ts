@@ -1,7 +1,8 @@
-import express from "express";
+import express, { urlencoded } from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import path from "path";
 import { json } from "body-parser";
 import { Express } from "express";
 import dotenv from "dotenv";
@@ -13,6 +14,17 @@ import eventRoutes from "../routes/eventRoutes";
 
 const app: Express = express();
 app.use(cors());
+app.use(urlencoded({ extended: false }));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+const port = env.PORT;
+app.use(json());
+connectDB();
+
+app.use("/", userRoutes);
+app.use("/events", eventRoutes);
+
+// Web Sockets
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -38,13 +50,6 @@ io.on("connection", (socket) => {
     console.log("Socket disconnected:", socket.id);
   });
 });
-
-const port = env.PORT;
-app.use(json());
-connectDB();
-
-app.use("/", userRoutes);
-app.use("/events", eventRoutes);
 
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

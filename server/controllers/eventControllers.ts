@@ -59,10 +59,19 @@ export const getEvents: RequestHandler = async (req, res) => {
 
 export const createEvents: RequestHandler = async (req, res) => {
   const { title, description } = req.body;
+  console.log("req.body", req.body);
+  console.log("req.files", req.files);
+
   try {
+    const files = req.files as Express.Multer.File[];
+    const images = files?.map((eachfile) => ({
+      originalname: eachfile.originalname,
+      path: eachfile.path,
+    }));
     const newEvent = await Events.create({
       title,
       description,
+      images,
     });
     return res.status(201).json({ newEvent });
   } catch (error) {

@@ -12,6 +12,7 @@ import { PaginationProvider } from "./context/paginationContext";
 import Counter from "./components/Counter/Counter";
 import UsersData from "./pages/Users/UsersData";
 import Chats from "./pages/Chats/Chats";
+import FileUpload from "./pages/FileUpload/FileUpload";
 // import EventTable from "./pages/Events/EventTable";
 
 function App() {
@@ -33,6 +34,9 @@ function App() {
               <NavLink to="/socket">Socket</NavLink>
             </li>
             <li>
+              <NavLink to="/fileupload">File Upload</NavLink>
+            </li>
+            <li>
               <NavLink to="/counter">Counter</NavLink>
             </li>
           </ul>
@@ -47,6 +51,8 @@ function App() {
             {/* <Route path="/" element={<EventTable />} /> */}
 
             <Route path="/game" element={<GameMain />} />
+            <Route path="/fileupload" element={<FileUpload />} />
+
             <Route path="/counter" element={<Counter />} />
           </Routes>
         </div>
