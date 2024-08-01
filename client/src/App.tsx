@@ -5,14 +5,17 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import GameMain from "./pages/Game/GameMain";
-import EventGrid from "./pages/Events/EventGrid";
+//import GameMain from "./pages/Game/GameMain";
+//import EventGrid from "./pages/Events/EventGrid";
 import "./App.css";
 import { PaginationProvider } from "./context/paginationContext";
-import Counter from "./components/Counter/Counter";
+//import Counter from "./components/Counter/Counter";
 import UsersData from "./pages/Users/UsersData";
 import Chats from "./pages/Chats/Chats";
-import FileUpload from "./pages/FileUpload/FileUpload";
+import EventsList from "./pages/Events/EventsList";
+import Event from "./pages/Events/Event/Event";
+import Notification from "./components/Notifications/Notification";
+//import FileUpload from "./pages/FileUpload/FileUpload";
 // import EventTable from "./pages/Events/EventTable";
 
 function App() {
@@ -30,7 +33,8 @@ function App() {
             <li>
               <NavLink to="/userdata">User Data</NavLink>
             </li>
-            <li>
+
+            {/* <li>
               <NavLink to="/socket">Socket</NavLink>
             </li>
             <li>
@@ -38,22 +42,23 @@ function App() {
             </li>
             <li>
               <NavLink to="/counter">Counter</NavLink>
-            </li>
+            </li> */}
+            <Notification />
           </ul>
         </nav>
         <div>
           <Routes>
             <Route path="/userdata" element={<UsersData />} />
+            <Route path="/" element={<EventsList />} />
+            <Route path="/event/:eventId" element={<Event />} />
             {/* <Route path="/" element={<UsersGrid />} /> */}
-            <Route path="/" element={<EventGrid />} />
+            {/* <Route path="/" element={<EventGrid />} /> */}
             <Route path="/socket" element={<Chats />} />
-
             {/* <Route path="/" element={<EventTable />} /> */}
-
+            {/* 
             <Route path="/game" element={<GameMain />} />
             <Route path="/fileupload" element={<FileUpload />} />
-
-            <Route path="/counter" element={<Counter />} />
+            <Route path="/counter" element={<Counter />} /> */}
           </Routes>
         </div>
       </PaginationProvider>

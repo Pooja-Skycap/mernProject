@@ -23,4 +23,12 @@ export interface PaginationProps {
   pageSize: number;
 }
 
- 
+export interface Notification {
+  id: number;
+  message: string;
+}
+
+export interface EventTitle {
+  id?: string,
+  title?: string;
+}

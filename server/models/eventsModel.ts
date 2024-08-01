@@ -17,5 +17,5 @@ const eventSchema = new Schema(
   }
 );
 
-type Events = InferSchemaType<typeof eventSchema>;
-export default model<Events>("Events", eventSchema);
+type EventsDocumet = InferSchemaType<typeof eventSchema>;
+export default model<EventsDocumet>("Events", eventSchema);
