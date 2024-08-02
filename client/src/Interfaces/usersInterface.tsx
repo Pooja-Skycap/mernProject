@@ -29,6 +29,12 @@ export interface Notification {
 }
 
 export interface EventTitle {
-  id?: string,
+  id?: string;
   title?: string;
+}
+
+export interface ResponseData {
+  title: string;
+  description?: string | undefined;
+  images?: { path: string }[];
 }

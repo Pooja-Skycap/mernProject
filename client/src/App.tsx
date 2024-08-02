@@ -15,6 +15,8 @@ import Chats from "./pages/Chats/Chats";
 import EventsList from "./pages/Events/EventsList";
 import Event from "./pages/Events/Event/Event";
 import Notification from "./components/Notifications/Notification";
+import LargeFileUpload from "./pages/FileUpload/LargeFileUpload";
+import CreateEvent from "./pages/Events/Create/CreateEvent";
 //import FileUpload from "./pages/FileUpload/FileUpload";
 // import EventTable from "./pages/Events/EventTable";
 
@@ -31,7 +33,13 @@ function App() {
               <NavLink to="/game">Game</NavLink>
             </li>
             <li>
+              <NavLink to="/event">Create Event</NavLink>
+            </li>
+            <li>
               <NavLink to="/userdata">User Data</NavLink>
+            </li>
+            <li>
+              <NavLink to="/fileupload">File Upload</NavLink>
             </li>
 
             {/* <li>
@@ -50,7 +58,10 @@ function App() {
           <Routes>
             <Route path="/userdata" element={<UsersData />} />
             <Route path="/" element={<EventsList />} />
+            <Route path="/event" element={<CreateEvent />} />
+
             <Route path="/event/:eventId" element={<Event />} />
+            <Route path="/fileupload" element={<LargeFileUpload />} />
             {/* <Route path="/" element={<UsersGrid />} /> */}
             {/* <Route path="/" element={<EventGrid />} /> */}
             <Route path="/socket" element={<Chats />} />

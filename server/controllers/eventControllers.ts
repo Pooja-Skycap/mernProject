@@ -1,4 +1,7 @@
 import { RequestHandler } from "express";
+import path from "path";
+import fs from "fs";
+
 import Events from "../models/eventsModel";
 export interface Images {
   originalname: string | null;
@@ -107,10 +110,67 @@ export const createEvents: RequestHandler = async (req, res) => {
     eventTitle.push({ id: newEvent._id.toString(), title: newEvent.title });
 
     notifyClients(eventTitle);
-    return res.status(201).json({ newEvent });
+    return res.status(201).json(newEvent);
   } catch (error) {
     let errorMessage = "An unknown error has occured";
     if (error instanceof Error) errorMessage = error.message;
     res.status(500).json({ error: errorMessage });
+  }
+};
+
+export const uploadLargeFile: RequestHandler = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const { chunk, totalChunks } = req.body;
+    const chunkIndex = parseInt(chunk, 10);
+    const filePath = path.join(__dirname, "../uploads", `file_${chunkIndex}`);
+
+    fs.rename(req.file.path, filePath, (err) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ message: "Error moving file", error: err.message });
+
+      if (chunkIndex === parseInt(totalChunks, 10) - 1) {
+        const finalFilePath = path.join(__dirname, "../uploads", "finalFile");
+        const writeStream = fs.createWriteStream(finalFilePath);
+
+        let chunksRead = 0;
+        for (let i = 0; i < totalChunks; i++) {
+          const chunkPath = path.join(__dirname, "../uploads", `file_${i}`);
+          fs.readFile(chunkPath, (readErr, data) => {
+            if (readErr)
+              return res.status(500).json({
+                message: "Error reading chunk",
+                error: readErr.message,
+              });
+
+            writeStream.write(data, () => {
+              chunksRead++;
+              fs.unlink(chunkPath, (unlinkErr) => {
+                if (unlinkErr) {
+                  console.error("Error deleting chunk:", unlinkErr);
+                }
+              });
+            });
+
+            if (chunksRead == totalChunks) {
+              writeStream.end(() => {
+                console.log("Final file created successfully");
+                res.status(200).json({ message: "File received and combined" });
+              });
+            }
+          });
+        }
+      } else {
+        res.status(200).json({ message: "Chunk received" });
+      }
+    });
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error });
   }
 };
