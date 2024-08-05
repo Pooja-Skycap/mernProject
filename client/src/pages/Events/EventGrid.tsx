@@ -28,8 +28,8 @@ const EventGrid = () => {
   );
 
   const handlePaginationModelChange = useCallback(
-    (model: PaginationProps) => {
-      setPaginationModel(model);
+    (paginationModel: PaginationProps) => {
+      setPaginationModel(paginationModel);
     },
     [setPaginationModel]
   );
@@ -78,14 +78,6 @@ const EventGrid = () => {
         <Error error={errorMessage} />
       ) : (
         <DataGrid
-          //   initialState={{
-          //     pagination: {
-          //       paginationModel: { pageSize, page},
-          //     },
-          //     // sorting: {
-          //     //   sortModel: [{ field: "username", sort: "asc" }],
-          //     // },
-          //   }}
           autoHeight
           rows={rows}
           rowCount={rowCount}

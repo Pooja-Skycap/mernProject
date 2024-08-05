@@ -5,7 +5,7 @@ import CircularLoader from "../../components/Loader/CircularLoader";
 import { useNavigate } from "react-router-dom";
 
 const EventsList = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const [events, setEvents] = useState<EventProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 

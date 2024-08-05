@@ -7,7 +7,6 @@ const Chats = () => {
   const [message, setMessage] = useState<string>("");
   const [room, setRoom] = useState<string>("");
   const [roomName, setRoomName] = useState<string>("");
-
   const [messages, setMessages] = useState<string[]>([]);
 
   useEffect(() => {
