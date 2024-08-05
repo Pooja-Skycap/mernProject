@@ -1,7 +1,7 @@
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import "../../../assets/styles/UserData.css";
+import "../UserData.css";
 import { UsersProps } from "../../../Interfaces/usersInterface";
 import CircularLoader from "../../../components/Loader/CircularLoader";
 
@@ -25,12 +25,12 @@ const UsersGrid = () => {
     };
     getusers();
   }, []);
-  const rows: GridRowsProp = users.map((user, index) => ({
+  const rows: GridRowsProp = users.map((user) => ({
     id: user.login.uuid,
-    index: index + 1,
+    index: user.login.uuid,
     thmubnail: <img src={user.picture.medium} />,
     userId: user.login.uuid,
-    username: user.name.first + " " + user.name.last,
+    username: `${user.name.first} ${user.name.last}`,
     useremail: user.email,
   }));
   const columns: GridColDef[] = [

@@ -76,25 +76,19 @@ const CreateEvent = () => {
   const generatePDFhandler = () => {
     if (!responseData) return;
     const doc = new jsPDF();
-
     const margin = 10;
-    const lineHeight = 10;
-    let currentY = margin;
-
     doc.setFontSize(50);
     doc.setFont("helvetica", "bold");
-    const titleWidth = doc.getTextWidth(response.title);
-    const titleX = (doc.internal.pageSize.width - titleWidth) / 2;
-    doc.text(response.title, titleX, currentY);
-    currentY += lineHeight * 2;
+    // const titleWidth = doc.getTextWidth(response.title);
+    // const titleX = (doc.internal.pageSize.width - titleWidth) / 2;
+    doc.text(response.title, 10, 20);
 
     if (response.description) {
       doc.setFontSize(20);
       doc.setFont("helvetica", "normal");
-      doc.text(response.description, margin + 10, currentY + 40, {
+      doc.text(response.description, margin + 10, 40, {
         maxWidth: doc.internal.pageSize.width - 2 * margin,
       });
-      currentY += lineHeight * 2;
     }
 
     const imagesToPDF: Promise<void>[] = (response.images || [])?.map(
@@ -105,7 +99,7 @@ const CreateEvent = () => {
           img.src = `http://localhost:5400/${image.path}`;
           console.log("img.src", img.src);
           img.onload = () => {
-            doc.addImage(img, "JPEG", 10, 20, 180, 160);
+            doc.addImage(img, "JPEG", 10, 50, 180, 160);
             resolve();
           };
           img.onerror = reject;

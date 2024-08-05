@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import UsersList from "../../components/Users/UsersList";
 import { UsersProps } from "../../Interfaces/usersInterface";
-import "../../assets/styles/UserData.css";
+import "./UserData.css";
 import CircularLoader from "../../components/Loader/CircularLoader";
 import { Pagination, Stack } from "@mui/material";
 import usePagination from "../../assets/Hooks/usePagination";
@@ -52,7 +52,7 @@ const UsersData = () => {
   }, []);
 
   return (
-    <main>
+    <div className="userdata">
       <h1>Users Data</h1>
       {isLoading ? (
         <CircularLoader />
@@ -102,7 +102,7 @@ const UsersData = () => {
           </Stack>
         </>
       )}
-    </main>
+    </div>
   );
 };
 

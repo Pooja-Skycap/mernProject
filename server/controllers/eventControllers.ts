@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
 import path from "path";
 import fs from "fs";
-
+import { v4 as uuidv4 } from "uuid";
+import { exec } from "child_process";
 import Events from "../models/eventsModel";
 export interface Images {
   originalname: string | null;
@@ -14,6 +15,16 @@ interface EventTitle {
 
 let newEventCount = 0;
 const eventTitle: EventTitle[] = [];
+
+interface Chapters {
+  videoUrl: string;
+  title: string;
+  description: string;
+}
+interface ChaptersCollection {
+  [key: string]: Chapters;
+}
+const chapters: ChaptersCollection = {};
 
 let clients: Array<
   (data: { count: number; eventTitle: EventTitle[] }) => void
@@ -31,7 +42,6 @@ export const sseEvents: RequestHandler = (req, res) => {
     clients = clients.filter((client) => client !== sendEvent);
   });
 };
-
 export const notifyClients = (eventTitle: EventTitle[]) => {
   clients.forEach((client) => client({ count: newEventCount, eventTitle }));
 };
@@ -40,6 +50,112 @@ export const resetNotificationCount: RequestHandler = (req, res) => {
   newEventCount = 0;
   // notifyClients();
   res.status(200).json({ message: "Notification count reset" });
+};
+
+export const createEvents: RequestHandler = async (req, res) => {
+  const { title, description } = req.body;
+  try {
+    const files = req.files as Express.Multer.File[] | undefined;
+    const images =
+      files?.map((file) => ({
+        originalname: file.originalname || null,
+        path: file.path || null,
+      })) || [];
+    const newEvent = await Events.create({
+      title,
+      description,
+      images,
+    });
+    newEventCount += 1;
+    eventTitle.push({ id: newEvent._id.toString(), title: newEvent.title });
+
+    notifyClients(eventTitle);
+    return res.status(201).json(newEvent);
+  } catch (error) {
+    let errorMessage = "An unknown error has occured";
+    if (error instanceof Error) errorMessage = error.message;
+    res.status(500).json({ error: errorMessage });
+  }
+};
+
+export const videoStream: RequestHandler = (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, "../utils/videos/", `${filename}.mp4`);
+  if (!filePath) return res.status(200).json({ msg: "No such file exists!" });
+  const fileSize = fs.statSync(filePath).size;
+  const range = req.headers.range;
+  if (!range) {
+    res.status(400).send("Requires Range header");
+  } else {
+    const parts = range.replace(/bytes=/, "").split("-");
+    const start = parseInt(parts[0], 10);
+    const CHUNK_SIZE = 10 ** 6;
+    const end = Math.min(start + CHUNK_SIZE, fileSize - 1);
+    // const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+    const contentLength = end - start + 1;
+    const headers = {
+      "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+      "Accept-Ranges": "bytes",
+      "Content-Length": contentLength,
+      "Content-Type": "video/mp4",
+    };
+    res.writeHead(206, headers);
+    fs.createReadStream(filePath, { start, end }).pipe(res);
+  }
+};
+
+export const videoStreamHLS: RequestHandler = (req, res) => {
+  const chapterId = uuidv4();
+  const videoPath = req?.file?.path;
+  console.log("filename", videoPath);
+
+  const outputFileName = "output.m3u8";
+  const filePath = path.join(
+    __dirname,
+    "../uploads",
+    `${chapterId}/${outputFileName}`
+  );
+  console.log("filePath", filePath);
+  if (!filePath) return res.status(200).json({ msg: "No such file exists!" });
+
+  const command = `ffmpeg -i ${videoPath} \
+  -map 0:v -c:v libx264 -crf 23 -preset medium -g 48 \
+  -map 0:v -c:v libx264 -crf 28 -preset fast -g 48 \
+  -map 0:v -c:v libx264 -crf 32 -preset fast -g 48 \
+  -map 0:a -c:a aac -b:a 128k \
+  -hls_time 10 -hls_playlist_type vod -hls_flags independent_segments -report \
+  -f hls ${filePath}`;
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`ffmpeg exec error: ${error}`);
+      return res
+        .status(500)
+        .json({ error: "Failed to convert video to HLS format" });
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+    const videoUrl = `uploads/${chapterId}/${outputFileName}`;
+    chapters[chapterId] = {
+      videoUrl,
+      title: req.body.title,
+      description: req.body.description,
+    };
+    res.json({
+      success: true,
+      message: "Video uploaded and converted to HLS.",
+      chapterId,
+    });
+  });
+};
+
+export const getVideos: RequestHandler = (req, res) => {
+  const chapterId = req.query.chapterId as string | undefined;
+  if (!chapterId || !chapters[chapterId]) {
+    return res.status(404).json({ error: "Chapter not found" });
+  }
+  const { title, videoUrl } = chapters[chapterId];
+  console.log(title, " ", videoUrl);
+  res.json({ title: title, url: videoUrl });
 };
 
 export const getEvents: RequestHandler = async (req, res) => {
@@ -85,32 +201,6 @@ export const getEventDetails: RequestHandler = async (req, res) => {
     return res.status(200).json({
       eachEvent,
     });
-  } catch (error) {
-    let errorMessage = "An unknown error has occured";
-    if (error instanceof Error) errorMessage = error.message;
-    res.status(500).json({ error: errorMessage });
-  }
-};
-
-export const createEvents: RequestHandler = async (req, res) => {
-  const { title, description } = req.body;
-  try {
-    const files = req.files as Express.Multer.File[] | undefined;
-    const images =
-      files?.map((file) => ({
-        originalname: file.originalname || null,
-        path: file.path || null,
-      })) || [];
-    const newEvent = await Events.create({
-      title,
-      description,
-      images,
-    });
-    newEventCount += 1;
-    eventTitle.push({ id: newEvent._id.toString(), title: newEvent.title });
-
-    notifyClients(eventTitle);
-    return res.status(201).json(newEvent);
   } catch (error) {
     let errorMessage = "An unknown error has occured";
     if (error instanceof Error) errorMessage = error.message;

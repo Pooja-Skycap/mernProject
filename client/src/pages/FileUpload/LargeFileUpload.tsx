@@ -1,3 +1,4 @@
+import { Button, Container, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { ChangeEvent, FormEvent, useState } from "react";
 
@@ -8,7 +9,7 @@ const LargeFileUpload = () => {
   const createFileSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
-    const CHUNK_SIZE = 1024*1024;
+    const CHUNK_SIZE = 1024 * 1024;
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
     for (let start = 0; start < file.size; start += CHUNK_SIZE) {
       const end = Math.min(start + CHUNK_SIZE, file.size);
@@ -47,13 +48,27 @@ const LargeFileUpload = () => {
   };
 
   return (
-    <form onSubmit={createFileSubmitHandler}>
-      <h1>Upload a File</h1>
-      <input type="file" onChange={hangleLargeFileChange} />
-      <button type="submit">Send</button>
-      <progress id="file" value={progress} max="100"></progress>
-      {progress}%
-    </form>
+    <Container maxWidth="sm">
+      <form onSubmit={createFileSubmitHandler}>
+        <Typography variant="h3" component="div" gutterBottom>
+          Upload a File
+        </Typography>
+        <TextField
+          type="file"
+          onChange={hangleLargeFileChange}
+          variant="outlined"
+          margin="normal"
+          fullWidth
+        />
+        <Button type="submit" variant="contained">
+          Send
+        </Button>
+        <Typography variant="h5" component="div" gutterBottom>
+          <progress id="file" value={progress} max="100"></progress>
+          {progress}%
+        </Typography>
+      </form>
+    </Container>
   );
 };
 

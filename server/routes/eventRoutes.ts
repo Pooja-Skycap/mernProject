@@ -4,9 +4,12 @@ import {
   createEvents,
   getEventDetails,
   getEvents,
+  getVideos,
   resetNotificationCount,
   sseEvents,
   uploadLargeFile,
+  videoStream,
+  videoStreamHLS,
 } from "../controllers/eventControllers";
 import { storage } from "../utils/multerStorage";
 
@@ -16,11 +19,14 @@ const route = express.Router();
 
 route.get("/stream", sseEvents);
 route.post("/reset-notification", resetNotificationCount);
-route.post("/create", upload.array("images", 5), createEvents);
-route.post("/upload", upload.single("file"), uploadLargeFile);
 
+route.get("/videos/:filename", videoStream);
+route.post("/upload", upload.single("file"), uploadLargeFile);
+route.post("/uploadVideos", upload.single("video"), videoStreamHLS);
+route.get("/getVideos", getVideos);
+
+route.post("/create", upload.array("images", 5), createEvents);
 route.get("/get", getEvents);
 route.get("/:eventId", getEventDetails);
-
 
 export default route;
