@@ -1,13 +1,24 @@
-import { Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  FormControl,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { jsPDF } from "jspdf";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import "./CreateEvent.css";
 import { ResponseData } from "../../../Interfaces/usersInterface";
+import { zodSchema } from "../../../formvalidation/zod";
+import { z } from "zod";
+
+type FormData = z.infer<typeof zodSchema>;
 
 const CreateEvent = () => {
-  const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
   const [responseData, setResponseData] = useState<boolean>(false);
@@ -16,10 +27,28 @@ const CreateEvent = () => {
     description: "",
     images: [],
   });
-
   const [imagesPreview, setImagesPreview] = useState<(string | ArrayBuffer)[]>(
     []
   );
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitted },
+    clearErrors,
+  } = useForm<FormData>({
+    resolver: zodResolver(zodSchema),
+    mode: "onChange", // Validate on every change
+  });
+
+  // const onhandleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setTitle(e.target.value);
+  //   validate(e.target.value);
+  // };
+  // const handleBlur = () => {
+  //   setTouched(true);
+  //   validate(title);
+  // };
 
   const createProductImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -43,10 +72,27 @@ const CreateEvent = () => {
     }
   };
 
-  const createProductSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const validate = (value: string) => {
+  //   try {
+  //     zodSchema.parse({ title: value });
+  //     setErrors({});
+  //   } catch (e) {
+  //     if (e instanceof z.ZodError) {
+  //       const errorMessages = e.errors.reduce(
+  //         (acc: { [key: string]: string }, { path, message }) => {
+  //           acc[path[0]] = message;
+  //           return acc;
+  //         },
+  //         {}
+  //       );
+  //       setErrors(errorMessages);
+  //     }
+  //   }
+  // };
+
+  const createProductSubmitHandler = async (data: FormData) => {
     const myForm = new FormData();
-    myForm.append("title", title);
+    myForm.append("title", data.title);
     myForm.append("description", description);
     images.forEach((image) => {
       myForm.append("images", image);
@@ -116,16 +162,44 @@ const CreateEvent = () => {
       <Typography variant="h3" component="div" gutterBottom>
         Create Events
       </Typography>
-      <form onSubmit={createProductSubmitHandler}>
-        <TextField
+      <form onSubmit={handleSubmit(createProductSubmitHandler)}>
+        <FormControl fullWidth margin="normal" error={!!errors.title}>
+          <Controller
+            name="title"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Title"
+                variant="outlined"
+                onChange={(e) => {
+                  field.onChange(e);
+                  clearErrors("title");
+                }}
+                onBlur={field.onBlur}
+                helperText={
+                  isSubmitted && errors.title ? errors.title.message : ""
+                }
+                error={!!errors.title}
+              />
+            )}
+          />
+
+          {/* <TextField
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={onhandleChange}
+          onBlur={handleBlur}
           id="outline-basic"
           label="Title"
           variant="outlined"
           fullWidth
+          helperText={errors.title}
+          error={!!errors.title}
           sx={{ paddingBottom: "14px" }}
-        />
+        /> */}
+        </FormControl>
+
         <TextField
           value={description}
           onChange={(e) => setDescription(e.target.value)}
