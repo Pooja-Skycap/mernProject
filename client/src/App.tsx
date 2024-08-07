@@ -17,10 +17,12 @@ import "./App.css";
 import { PaginationProvider } from "./context/paginationContext";
 //import Counter from "./components/Counter/Counter";
 //import Chats from "./pages/Chats/Chats";
-//import CreateEvent from "./pages/Events/Create/CreateEvent";
+import CreateEvent from "./pages/Events/Create/CreateEvent";
 import Notification from "./components/Notifications/Notification";
 import LargeFileUpload from "./pages/FileUpload/LargeFileUpload";
 import Video from "./pages/FileUpload/Video";
+//import Charts from "./pages/Charts/Charts";
+import ReactCharts from "./pages/Charts/ReactCharts";
 
 function App() {
   return (
@@ -28,9 +30,10 @@ function App() {
       <PaginationProvider>
         <nav className="navbar">
           <ul>
-            {/* <li>
+            <li>
               <NavLink to="/event">Create Event</NavLink>
             </li>
+            {/*
             <li>
               <NavLink to="/">Events Lists</NavLink>
             </li>
@@ -50,6 +53,9 @@ function App() {
               <NavLink to="/socket">Socket</NavLink>
             </li> */}
             <li>
+              <NavLink to="/charts">React Charts</NavLink>
+            </li>
+            <li>
               <NavLink to="/fileupload">Large File Upload</NavLink>
             </li>
             <li>
@@ -68,7 +74,10 @@ function App() {
             <Route path="/" element={<EventGrid />} />
             <Route path="/counter" element={<Counter />} />
             <Route path="/socket" element={<Chats />} />
-            <Route path="/event" element={<CreateEvent />} /> */}
+            */}
+            <Route path="/event" element={<CreateEvent />} />
+            <Route path="/charts" element={<ReactCharts />} />
+
             <Route path="/fileupload" element={<LargeFileUpload />} />
             <Route path="/video" element={<Video />} />
           </Routes>

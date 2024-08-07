@@ -1,7 +1,9 @@
-import { MouseEvent, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
 // import VideoPlayer from "./VideoPlayer";
 // import videojs from 'video.js';
 import "video.js/dist/video-js.css";
+import VideoPlayers from "./VideoPlayers";
 
 const Video = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -48,10 +50,28 @@ const Video = () => {
   //     videojs.log("player will dispose");
   //   });
   // };
+  const [videoUrl, setVideoUrl] = useState("");
+
+  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append("video", file);
+
+      axios
+        .post("http://localhost:5400/events/uploadVideos", formData)
+        .then((response) => {
+          setVideoUrl(response.data.videoUrl);
+        })
+        .catch((error) => {
+          console.error("Error uploading video:", error);
+        });
+    }
+  };
 
   return (
     <div>
-      <video ref={videoRef} width="320" height="240" controls autoPlay>
+      {/* <video ref={videoRef} width="320" height="240" controls autoPlay>
         <source
           src={`http://localhost:5400/events/videos/${videoId}`}
           type="video/mp4"
@@ -70,7 +90,13 @@ const Video = () => {
         }}
       >
         Play Video 2
-      </button>
+      </button> */}
+
+      <div>
+        <h1>Upload and Play Video</h1>
+        <input type="file" onChange={handleFileUpload} />
+        {videoUrl && <VideoPlayers src={videoUrl} />}
+      </div>
 
       {/* <div>
         <VideoPlayer options={videoJsOptions} onReady={handlePlayerReady} />

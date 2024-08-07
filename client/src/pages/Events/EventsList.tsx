@@ -3,6 +3,7 @@ import { EventProps } from "../../Interfaces/usersInterface";
 import axios from "axios";
 import CircularLoader from "../../components/Loader/CircularLoader";
 import { useNavigate } from "react-router-dom";
+import GitHubCalendar from "react-github-calendar";
 
 const EventsList = () => {
   const navigate = useNavigate();
@@ -48,6 +49,9 @@ const EventsList = () => {
           ))}
         </ul>
       )}
+      <div>
+        <GitHubCalendar username="Pooja-Skycap" />
+      </div>
     </>
   );
 };

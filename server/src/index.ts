@@ -1,6 +1,6 @@
 import express, { urlencoded } from "express";
-import http from "http";
-import { Server } from "socket.io";
+// import http from "http";
+// import { Server } from "socket.io";
 import cors from "cors";
 import path from "path";
 import { json } from "body-parser";
@@ -25,32 +25,32 @@ app.use("/", userRoutes);
 app.use("/events", eventRoutes);
 
 // Web Sockets
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// });
 
-io.on("connection", (socket) => {
-  socket.on("message", ({ room, message }) => {
-    console.log("socket", { room, message });
-    socket.to(room).emit("recieve-message", message);
-  });
+// io.on("connection", (socket) => {
+//   socket.on("message", ({ room, message }) => {
+//     console.log("socket", { room, message });
+//     socket.to(room).emit("recieve-message", message);
+//   });
 
-  socket.on("joined-room", (roomName) => {
-    console.log("roomName", roomName);
-    socket.join(roomName);
-  });
+//   socket.on("joined-room", (roomName) => {
+//     console.log("roomName", roomName);
+//     socket.join(roomName);
+//   });
 
-  socket.on("disconnect", () => {
-    console.log("Socket disconnected:", socket.id);
-  });
-});
+//   socket.on("disconnect", () => {
+//     console.log("Socket disconnected:", socket.id);
+//   });
+// });
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
