@@ -1,5 +1,10 @@
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
+import {
+  ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Pie,
+} from "../../utils/commonImports";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ReactCharts = () => {

@@ -1,10 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
 import UsersList from "../../components/Users/UsersList";
 import { UsersProps } from "../../Interfaces/usersInterface";
 import "./UserData.css";
 import CircularLoader from "../../components/Loader/CircularLoader";
-import { Pagination, Stack } from "@mui/material";
+import {
+  useEffect,
+  useState,
+  Pagination,
+  Stack,
+} from "../../utils/commonImports";
 import usePagination from "../../assets/Hooks/usePagination";
 import Error from "../../components/Error/Error";
 

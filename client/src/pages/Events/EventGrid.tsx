@@ -3,13 +3,15 @@ import {
   GridRowsProp,
   GridColDef,
   GridSortModel,
-} from "@mui/x-data-grid";
-import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+  useCallback,
+  useEffect,
+  useState,
+} from "../../utils/commonImports";
 import CircularLoader from "../../components/Loader/CircularLoader";
 import { EventProps, PaginationProps } from "../../Interfaces/usersInterface";
 import { usePagination } from "../../context/paginationContext";
 import Error from "../../components/Error/Error";
+import { getRequest } from "../../utils/services";
 
 const EventGrid = () => {
   const { paginationModel, setPaginationModel, sortModel, setSortModel } =
@@ -34,29 +36,31 @@ const EventGrid = () => {
     [setPaginationModel]
   );
 
-  const url = useMemo(() => {
-    return `http://localhost:5400/events/get?offset=${paginationModel.page}&limit=${paginationModel.pageSize}&fieldname=${sortModel?.[0]?.field}&sort=${sortModel?.[0]?.sort}`;
-  }, [paginationModel, sortModel]);
+  // const url = useMemo(() => {
+  //   return getRequest(`/events/get?offset=${paginationModel.page}&limit=${paginationModel.pageSize}&fieldname=${sortModel?.[0]?.field}&sort=${sortModel?.[0]?.sort}`)
+  // }, [paginationModel, sortModel]);
 
   useEffect(() => {
     const getusers = async () => {
       try {
         setIsLoading(true);
-        const { data } = await axios.get(url);
+        const data = await getRequest(
+          `/events/get?offset=${paginationModel.page}&limit=${paginationModel.pageSize}&fieldname=${sortModel?.[0]?.field}&sort=${sortModel?.[0]?.sort}`
+        );
         setRowCount(data?.totalCount);
         setEvents(data.events);
       } catch (error) {
         console.log("error", error);
         setIsError(true);
-        if (axios.isAxiosError(error)) {
-          setErrorMessage(error.message);
+        if (error) {
+          setErrorMessage("Network Issue");
         }
       } finally {
         setIsLoading(false);
       }
     };
     getusers();
-  }, [url]);
+  }, [paginationModel, sortModel]);
 
   const rows: GridRowsProp = events.map((event, index) => ({
     id: event._id,

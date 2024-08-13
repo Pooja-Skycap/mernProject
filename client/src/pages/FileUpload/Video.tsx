@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useRef, useState } from "../../utils/commonImports";
 // import VideoPlayer from "./VideoPlayer";
 // import videojs from 'video.js';
 import "video.js/dist/video-js.css";

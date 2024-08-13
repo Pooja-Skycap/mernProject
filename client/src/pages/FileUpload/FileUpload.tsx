@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "../../utils/commonImports";
 import "./FileUpload.css";
 import axios from "axios";
 const FileUpload = () => {

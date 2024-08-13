@@ -5,8 +5,8 @@ import {
   SetStateAction,
   useContext,
   useState,
-} from "react";
-import { GridSortModel } from "@mui/x-data-grid";
+  GridSortModel,
+} from "../utils/commonImports";
 import { PaginationProps } from "../Interfaces/usersInterface"; // Ensure this import is correct
 
 interface PaginationContextType {

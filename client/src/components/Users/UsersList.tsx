@@ -5,13 +5,16 @@ import {
   CardContent,
   CardMedia,
   Typography,
-} from "@mui/material";
+} from "../../utils/commonImports";
 
 const UsersList = ({ name, login, email, picture }: UsersProps) => {
   return (
     <>
-      <Card sx={{ display: "flex", margin:2, width: 350, height:150  }} key={login.uuid}>
-        <Box sx={{ display: "flex", flexDirection: "column",  maxWidth: 250 }}>
+      <Card
+        sx={{ display: "flex", margin: 2, width: 350, height: 150 }}
+        key={login.uuid}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column", maxWidth: 250 }}>
           <CardContent sx={{ flex: "1 0 auto" }}>
             <Typography component="div" variant="h5">
               {name.first} {name.last}

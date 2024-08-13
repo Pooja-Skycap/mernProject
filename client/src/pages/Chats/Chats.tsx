@@ -1,6 +1,16 @@
-import { Button, Container, Stack, TextField, Typography } from "@mui/material";
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { io, Socket } from "socket.io-client";
+import {
+  Button,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+  FormEvent,
+  useEffect,
+  useMemo,
+  useState,
+  io,
+  Socket,
+} from "../../utils/commonImports";
 
 const Chats = () => {
   const socket: Socket = useMemo(() => io("ws://localhost:5400"), []);

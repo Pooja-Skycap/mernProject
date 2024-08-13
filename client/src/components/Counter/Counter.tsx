@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "../../utils/commonImports";
 import { AppDispatch, RootState } from "../../redux/store";
 import {
   incAsyncFunc,
@@ -19,9 +19,7 @@ const Counter = () => {
         <button onClick={() => dispatch(decrementByValue(5))}>Decrement</button>
       </div>
       <div>
-        <button onClick={() => dispatch(incAsyncFunc(5))}>
-          Increment
-        </button>
+        <button onClick={() => dispatch(incAsyncFunc(5))}>Increment</button>
       </div>
     </div>
   );

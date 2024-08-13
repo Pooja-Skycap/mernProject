@@ -1,6 +1,13 @@
-import { Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  TextField,
+  Typography,
+  ChangeEvent,
+  FormEvent,
+  useState,
+} from "../../utils/commonImports";
 import axios from "axios";
-import { ChangeEvent, FormEvent, useState } from "react";
 
 const LargeFileUpload = () => {
   const [file, setFile] = useState<File | null>(null);

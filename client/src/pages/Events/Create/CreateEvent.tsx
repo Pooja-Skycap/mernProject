@@ -4,19 +4,18 @@ import {
   FormControl,
   TextField,
   Typography,
-} from "@mui/material";
-import axios from "axios";
-import { ChangeEvent, useState } from "react";
-import { jsPDF } from "jspdf";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+  ChangeEvent,
+  useState,
+  jsPDF,
+  useForm,
+  Controller,
+  zodResolver,
+} from "../../../utils/commonImports";
 import "./CreateEvent.css";
 import { ResponseData } from "../../../Interfaces/usersInterface";
 import { zodSchema } from "../../../formvalidation/zod";
-import { z } from "zod";
-
-type FormData = z.infer<typeof zodSchema>;
+import { postRequest } from "../../../utils/services";
+import type { CreateEventData } from "../../../formvalidation/zod";
 
 const CreateEvent = () => {
   const [description, setDescription] = useState<string>("");
@@ -36,9 +35,9 @@ const CreateEvent = () => {
     handleSubmit,
     formState: { errors, isSubmitted },
     clearErrors,
-  } = useForm<FormData>({
+  } = useForm<CreateEventData>({
     resolver: zodResolver(zodSchema),
-    mode: "onChange", // Validate on every change
+    mode: "onChange",
   });
 
   // const onhandleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +89,7 @@ const CreateEvent = () => {
   //   }
   // };
 
-  const createProductSubmitHandler = async (data: FormData) => {
+  const createProductSubmitHandler = async (data: ResponseData) => {
     const myForm = new FormData();
     myForm.append("title", data.title);
     myForm.append("description", description);
@@ -99,17 +98,9 @@ const CreateEvent = () => {
     });
 
     try {
-      const response = await axios.post(
-        "http://localhost:5400/events/create",
-        myForm,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log("response.data", response.data);
-      const newEvent = response.data;
+      const response = await postRequest("/events/create", myForm);
+      console.log("response.data", response);
+      const newEvent = response;
       if (newEvent) {
         setResponseData(true);
         setResponse(newEvent);

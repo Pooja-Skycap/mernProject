@@ -1,4 +1,4 @@
-import { createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper } from "../../utils/commonImports";
 import { EventProps } from "../../Interfaces/usersInterface";
 
 const columnHelper = createColumnHelper<EventProps>();
