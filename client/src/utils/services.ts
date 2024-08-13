@@ -1,13 +1,13 @@
 import Axios, { AxiosResponse } from "axios";
 const BASE_PATH = import.meta.env.VITE_BACKEND_BASE_URL;
-import type { CreateEventData } from "../formvalidation/zod";
-import { ResponseData } from "../Interfaces/usersInterface";
+//import type { CreateEventData } from "../formvalidation/zod";
+import { ImageResponse } from "../Interfaces/usersInterface";
 
 console.log("BASE_PATH-------", BASE_PATH);
 
 const getApiPath = (endpoint: string) => BASE_PATH + endpoint;
 
-export const getRequest = async (endpoint: string) => {
+export const getRequest = async (endpoint:  string) => {
   try {
     const response = await Axios.get(getApiPath(endpoint));
     return response.data;
@@ -24,17 +24,14 @@ export const getRequest = async (endpoint: string) => {
 
 export const postRequest = async (
   endpoint: string,
-  body?: CreateEventData
-): Promise<ResponseData> => {
-  console.log("endpoint------------", getApiPath(endpoint));
-  console.log("body------------", getConfigSetting());
+  body?: FormData
+): Promise<ImageResponse> => {
   try {
-    const response: AxiosResponse<ResponseData> = await Axios.post(
+    const response: AxiosResponse<ImageResponse> = await Axios.post(
       getApiPath(endpoint),
       body,
       getConfigSetting()
     );
-    console.log("response======>", response);
     return response.data;
   } catch (error) {
     if (Axios.isAxiosError(error)) {

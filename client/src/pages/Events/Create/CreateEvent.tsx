@@ -12,16 +12,15 @@ import {
   zodResolver,
 } from "../../../utils/commonImports";
 import "./CreateEvent.css";
-import { ResponseData } from "../../../Interfaces/usersInterface";
+import { ImageResponse, ResponseData } from "../../../Interfaces/usersInterface";
 import { zodSchema } from "../../../formvalidation/zod";
 import { postRequest } from "../../../utils/services";
 import type { CreateEventData } from "../../../formvalidation/zod";
 
 const CreateEvent = () => {
-  const [description, setDescription] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
   const [responseData, setResponseData] = useState<boolean>(false);
-  const [response, setResponse] = useState<ResponseData>({
+  const [response, setResponse] = useState<ImageResponse>({
     title: "",
     description: "",
     images: [],
@@ -39,15 +38,6 @@ const CreateEvent = () => {
     resolver: zodResolver(zodSchema),
     mode: "onChange",
   });
-
-  // const onhandleChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setTitle(e.target.value);
-  //   validate(e.target.value);
-  // };
-  // const handleBlur = () => {
-  //   setTouched(true);
-  //   validate(title);
-  // };
 
   const createProductImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -68,31 +58,14 @@ const CreateEvent = () => {
         reader.readAsDataURL(file);
       });
       setImages(files);
+      console.log("images", images);
     }
   };
-
-  // const validate = (value: string) => {
-  //   try {
-  //     zodSchema.parse({ title: value });
-  //     setErrors({});
-  //   } catch (e) {
-  //     if (e instanceof z.ZodError) {
-  //       const errorMessages = e.errors.reduce(
-  //         (acc: { [key: string]: string }, { path, message }) => {
-  //           acc[path[0]] = message;
-  //           return acc;
-  //         },
-  //         {}
-  //       );
-  //       setErrors(errorMessages);
-  //     }
-  //   }
-  // };
 
   const createProductSubmitHandler = async (data: ResponseData) => {
     const myForm = new FormData();
     myForm.append("title", data.title);
-    myForm.append("description", description);
+    myForm.append("description", data.description);
     images.forEach((image) => {
       myForm.append("images", image);
     });
@@ -176,22 +149,37 @@ const CreateEvent = () => {
               />
             )}
           />
-
-          {/* <TextField
-          value={title}
-          onChange={onhandleChange}
-          onBlur={handleBlur}
-          id="outline-basic"
-          label="Title"
-          variant="outlined"
-          fullWidth
-          helperText={errors.title}
-          error={!!errors.title}
-          sx={{ paddingBottom: "14px" }}
-        /> */}
         </FormControl>
 
-        <TextField
+        <FormControl fullWidth margin="normal" error={!!errors.title}>
+          <Controller
+            name="description"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Description"
+                variant="outlined"
+                multiline
+                rows={4}
+                onChange={(e) => {
+                  field.onChange(e);
+                  clearErrors("description");
+                }}
+                onBlur={field.onBlur}
+                helperText={
+                  isSubmitted && errors.description
+                    ? errors.description.message
+                    : ""
+                }
+                error={!!errors.description}
+              />
+            )}
+          />
+        </FormControl>
+
+        {/* <TextField
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           multiline
@@ -200,7 +188,7 @@ const CreateEvent = () => {
           label="Description"
           variant="outlined"
           fullWidth
-        />
+        /> */}
         <TextField
           type="file"
           inputProps={{ multiple: true }}
