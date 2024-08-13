@@ -26,7 +26,7 @@ import LargeFileUpload from "./pages/FileUpload/LargeFileUpload";
 //import ReactCharts from "./pages/Charts/ReactCharts";
 import ModalExample from "./pages/Modal/ModalExample";
 import UsersWithActionButton from "./pages/Users/DataGrid/UsersWithActionButton";
-import InstantSearch from "./pages/Search/InstantSearch";
+//import InstantSearch from "./pages/Search/InstantSearch";
 import SearchComponent from "./pages/Search/SearchComponent";
 
 interface PrivateRouteProps {

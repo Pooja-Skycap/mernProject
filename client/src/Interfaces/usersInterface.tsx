@@ -35,6 +35,12 @@ export interface EventTitle {
 
 export interface ResponseData {
   title: string;
-  description?: string | undefined;
+  description: string;
+  images?: File[];
+}
+
+export interface ImageResponse {
+  title: string;
+  description: string;
   images?: { path: string }[];
 }

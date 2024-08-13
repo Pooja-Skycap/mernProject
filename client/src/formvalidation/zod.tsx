@@ -6,7 +6,7 @@ export const zodSchema = z.object({
     .min(1, "Title cannot be empty")
     .max(100, "Title can be at most 100 characters long"),
 
-  description: z.string().optional(),
+  description: z.string().min(1, "Description cannot be empty"),
   images: z.array(z.instanceof(File)).optional(),
 });
 
