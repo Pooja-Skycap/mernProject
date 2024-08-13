@@ -1,6 +1,11 @@
-import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridRowsProp,
+  GridColDef,
+  useEffect,
+  useState,
+} from "../../../utils/commonImports";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import "../UserData.css";
 import { UsersProps } from "../../../Interfaces/usersInterface";
 import CircularLoader from "../../../components/Loader/CircularLoader";

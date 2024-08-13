@@ -3,11 +3,12 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-} from "@tanstack/react-table";
+  useEffect,
+  useState,
+} from "../../utils/commonImports";
 import { columns } from "../../components/Events/columns";
-import { useEffect, useState } from "react";
 import { EventProps } from "../../Interfaces/usersInterface";
-import axios from "axios";
+import { getRequest } from "../../utils/services";
 
 const EventTable = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -16,20 +17,21 @@ const EventTable = () => {
 
   useEffect(() => {
     const getusers = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        const { data } = await axios.get(`http://localhost:5400/events/get`);
-        setRowCount(data?.totalCount);
-        console.log("data", data?.events);
+        const data = await getRequest("/events/get?limit=10");
         setEvents(data.events);
+        setRowCount(data?.totalCount);
       } catch (error) {
-        console.log("error", error);
+        console.error("Error fetching events:", error);
       } finally {
         setIsLoading(false);
       }
     };
+
     getusers();
   }, []);
+
   console.log("columns", columns);
   console.log("rowCount", rowCount);
   console.log("isLoading", isLoading);

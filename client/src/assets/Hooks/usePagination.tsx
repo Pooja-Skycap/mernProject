@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from "../../utils/commonImports";
 import { UsersProps } from "../../Interfaces/usersInterface";
 
 const usePagination = (data: UsersProps[], itemsPerPage: number) => {

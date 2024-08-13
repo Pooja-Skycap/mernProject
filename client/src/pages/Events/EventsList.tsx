@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  useNavigate,
+  GitContribution,
+} from "../../utils/commonImports";
 import { EventProps } from "../../Interfaces/usersInterface";
-import axios from "axios";
 import CircularLoader from "../../components/Loader/CircularLoader";
-import { useNavigate } from "react-router-dom";
-import GitHubCalendar from "react-github-calendar";
+import { getRequest } from "../../utils/services";
 
 const EventsList = () => {
   const navigate = useNavigate();
@@ -11,21 +14,18 @@ const EventsList = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    try {
-      const fetchEvents = async () => {
-        setIsLoading(true);
-        const { data } = await axios.get(
-          "http://localhost:5400/events/get?limit=10"
-        );
+    const fetchEvents = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getRequest("/events/get?limit=10");
         setEvents(data.events);
-        console.log("data", data);
-      };
-      fetchEvents();
-    } catch (error) {
-      console.log("error", error);
-    } finally {
-      setIsLoading(false);
-    }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchEvents();
   }, []);
 
   const handleClick = (id: string) => {
@@ -50,7 +50,7 @@ const EventsList = () => {
         </ul>
       )}
       <div>
-        <GitHubCalendar username="Pooja-Skycap" />
+        <GitContribution username="Pooja-Skycap" />
       </div>
     </>
   );

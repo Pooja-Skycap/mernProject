@@ -1,9 +1,16 @@
-import { Badge, ListItemText, Menu, MenuItem, Typography } from "@mui/material";
-import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import {
+  Badge,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Typography,
+  NotificationsIcon,
+  useEffect,
+  useState,
+  useNavigate,
+} from "../../utils/commonImports";
 import { EventTitle } from "../../Interfaces/usersInterface";
-import { useNavigate } from "react-router-dom";
+import { postRequest } from "../../utils/services";
 
 const Notification = () => {
   const navigate = useNavigate();
@@ -33,13 +40,12 @@ const Notification = () => {
       eventSource.close();
     };
   }, [eventTitle]);
-  console.log("eventTitle", eventTitle);
 
   const handleBellClick = async (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
 
     try {
-      await axios.post("http://localhost:5400/events/reset-notification");
+      await postRequest("/events/reset-notification");
       localStorage.setItem("notificationCount", "0");
 
       setNotificationCount(0);
@@ -62,7 +68,7 @@ const Notification = () => {
           onClick={handleBellClick}
           style={{ cursor: "pointer", color: "white" }}
         >
-          <CircleNotificationsIcon />
+          <NotificationsIcon />
         </Typography>
       </Badge>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>

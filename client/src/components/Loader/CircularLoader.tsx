@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "../../utils/commonImports";
 const CircularLoader = () => {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>

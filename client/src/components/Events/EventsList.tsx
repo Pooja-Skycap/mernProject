@@ -1,5 +1,4 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
-
+import { Box, Card, CardContent, Typography } from "../../utils/commonImports";
 interface EventsProps {
   title: string;
   description: string;

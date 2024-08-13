@@ -16,7 +16,6 @@ const professionList = [
   },
 ];
 const imageId = "YfeOqp2";
-console.log("professionList", professionList);
 professionList.map((eachProfessor) => {
   <li>console.log({eachProfessor[imageId].profession})</li>;
 });
